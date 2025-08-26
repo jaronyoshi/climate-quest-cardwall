@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>QR Code Scanner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #a8a8a8;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .cancel-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #333;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .cancel-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .scanner-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 40px 60px;
+        }
+
+        .scanner-frame {
+            width: 320px;
+            height: 320px;
+            background-color: #f0f0f0;
+            border-radius: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        #video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 24px;
+        }
+
+        .scanner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        .scan-line {
+            position: absolute;
+            left: 20px;
+            right: 20px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ff00, transparent);
+            animation: scan 2s linear infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes scan {
+            0% { top: 20px; }
+            100% { top: calc(100% - 22px); }
+        }
+
+        .corner {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #00ff00;
+        }
+
+        .corner.top-left {
+            top: 20px;
+            left: 20px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .corner.top-right {
+            top: 20px;
+            right: 20px;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .corner.bottom-left {
+            bottom: 20px;
+            left: 20px;
+            border-right: none;
+            border-top: none;
+        }
+
+        .corner.bottom-right {
+            bottom: 20px;
+            right: 20px;
+            border-left: none;
+            border-top: none;
+        }
+
+        .instructions {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .status {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            display: none;
+        }
+
+        .error {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 0, 0, 0.9);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 16px;
+            display: none;
+            z-index: 1000;
+        }
+
+        /* iPad specific adjustments */
+        @media screen and (min-width: 768px) {
+            .scanner-frame {
+                width: 400px;
+                height: 400px;
+            }
+            
+            .instructions {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="cancel-btn" onclick="cancelScanning()">
+            ← Cancel
+        </button>
+    </div>
+
+    <div class="scanner-container">
+        <div class="scanner-frame">
+            <video id="video" autoplay muted playsinline></video>
+            <div class="scanner-overlay">
+                <div class="scan-line"></div>
+                <div class="corner top-left"></div>
+                <div class="corner top-right"></div>
+                <div class="corner bottom-left"></div>
+                <div class="corner bottom-right"></div>
+            </div>
+            <div class="status" id="status">Initializing camera...</div>
+        </div>
+    </div>
+
+    <div class="instructions">
+        Scan the QR-code on the back of our card
+    </div>
+
+    <div class="error" id="error"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.js"></script>
+    <script>
+        let video;
+        let canvas;
+        let canvasContext;
+        let scanning = false;
+        let stream;
+
+        function showStatus(message) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.style.display = 'block';
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 2000);
+        }
+
+        function showError(message) {
+            const error = document.getElementById('error');
+            error.textContent = message;
+            error.style.display = 'block';
+            setTimeout(() => {
+                error.style.display = 'none';
+            }, 3000);
+        }
+
+        function cancelScanning() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            // In a real app, this would navigate back or close the scanner
+            window.history.back();
+        }
+
+        function isValidURL(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
+        function handleQRCode(qrData) {
+            if (!qrData) return;
+
+            scanning = false;
+            showStatus('QR Code detected!');
+
+            // Check if it's a valid URL
+            if (isValidURL(qrData)) {
+                setTimeout(() => {
+                    window.location.href = qrData;
+                }, 500);
+            } else {
+                // If it's not a URL, you might want to handle it differently
+                // For now, we'll try to navigate anyway or show an error
+                showError('QR code does not contain a valid URL');
+                setTimeout(() => {
+                    scanning = true; // Resume scanning
+                }, 2000);
+            }
+        }
+
+        function tick() {
+            if (!scanning) return;
+
+            if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                canvas.height = video.videoHeight;
+                canvas.width = video.videoWidth;
+                canvasContext.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                const imageData = canvasContext.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                    inversionAttempts: "dontInvert",
+                });
+
+                if (code) {
+                    handleQRCode(code.data);
+                }
+            }
+            
+            if (scanning) {
+                requestAnimationFrame(tick);
+            }
+        }
+
+        async function startScanning() {
+            video = document.getElementById('video');
+            canvas = document.createElement('canvas');
+            canvasContext = canvas.getContext('2d');
+
+            try {
+                showStatus('Starting camera...');
+
+                // Request camera access with front camera preference
+                const constraints = {
+                    video: {
+                        facingMode: 'user', // Front-facing camera
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }
+                };
+
+                stream = await navigator.mediaDevices.getUserMedia(constraints);
+                video.srcObject = stream;
+
+                video.addEventListener('loadedmetadata', () => {
+                    showStatus('Camera ready - Point at QR code');
+                    scanning = true;
+                    tick();
+                });
+
+            } catch (err) {
+                console.error('Error accessing camera:', err);
+                let errorMessage = 'Camera access denied or not available';
+                
+                if (err.name === 'NotAllowedError') {
+                    errorMessage = 'Please allow camera access to scan QR codes';
+                } else if (err.name === 'NotFoundError') {
+                    errorMessage = 'No camera found on this device';
+                }
+                
+                showError(errorMessage);
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if jsQR library loaded
+            if (typeof jsQR === 'undefined') {
+                showError('QR scanning library failed to load');
+                return;
+            }
+
+            startScanning();
+        });
+
+        // Handle page visibility change (important for iPad)
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                scanning = false;
+            } else if (stream && !scanning) {
+                scanning = true;
+                tick();
+            }
+        });
+
+        // Prevent zoom on iPad
+        document.addEventListener('gesturestart', function (e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('gesturechange', function (e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('gestureend', function (e) {
+            e.preventDefault();
+        });
+    </script>
+</body>
+</html>
