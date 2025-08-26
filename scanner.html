@@ -209,7 +209,7 @@
 
     <div class="error" id="error"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.js"></script>
+    <script src="https://unpkg.com/jsqr@1.4.0/dist/jsQR.js"></script>
     <script>
         let video;
         let canvas;
@@ -338,13 +338,14 @@
 
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', () => {
-            // Check if jsQR library loaded
-            if (typeof jsQR === 'undefined') {
-                showError('QR scanning library failed to load');
-                return;
-            }
-
-            startScanning();
+            // Add a delay to ensure jsQR library has time to load
+            setTimeout(() => {
+                if (typeof jsQR === 'undefined') {
+                    showError('QR scanning library failed to load. Please refresh the page.');
+                    return;
+                }
+                startScanning();
+            }, 1000);
         });
 
         // Handle page visibility change (important for iPad)
