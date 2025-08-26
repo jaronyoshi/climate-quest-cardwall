@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sea Level Display</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(to bottom, #87CEEB 0%, #4682B4 100%);
+      background-size: cover;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+    #ocean {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 80%; /* Starting sea level */
+      background: rgba(0, 179, 255, 0.7);
+      transition: height 0.8s ease;
+      box-shadow: 0 -5px 20px rgba(0, 179, 255, 0.5);
+    }
+    #info {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      color: white;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 15px;
+      border-radius: 10px;
+      z-index: 100;
+    }
+    #nav {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+    }
+    #nav a {
+      background: #ff6b35;
+      color: white;
+      padding: 12px 20px;
+      text-decoration: none;
+      border-radius: 25px;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+    #nav a:hover {
+      background: #ff5722;
+    }
+  
+  </style>
+</head>
+<body>
+  <div id="info">
+    <h3>Sea Level Monitor</h3>
+    <p>Current Count: <span id="count">Loading...</span></p>
+    <p>Ocean Height: <span id="height">80%</span></p>
+    <p>Status: <span id="status">Connecting...</span></p>
+  </div>
+
+  <div id="nav">
+    <a href="scan.html">Take Action</a>
+  </div>
+
+  <img src="assets/Auckland city.jpg" alt="Auckland city" style="width: 100%;">
+
+  <div class="city"></div>
+  <div id="ocean"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+    //  Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyANWovU5bG4AR9zuA8vgfiqUQqyAIwfqGs",
+      authDomain: "poc-sea-level.firebaseapp.com",
+      projectId: "poc-sea-level",
+      storageBucket: "poc-sea-level.appspot.com",  
+      messagingSenderId: "189055923417",
+      appId: "1:189055923417:web:f952d3a635fd051ad93ac8",
+      databaseURL: "https://poc-sea-level-default-rtdb.asia-southeast1.firebasedatabase.app" 
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const ocean = document.getElementById("ocean");
+    const countElement = document.getElementById("count");
+    const heightElement = document.getElementById("height");
+    const statusElement = document.getElementById("status");
+    
+    const baseHeight = 80; // starting %
+    const dropPerScan = 5; // % drop per scan
+
+    // Initialize database with 0 if it doesn't exist
+    const countRef = ref(db, "seaLevel/count");
+    
+    try {
+      // Set initial value
+      await set(countRef, 0);
+      console.log("Database initialized");
+    } catch (error) {
+      console.log("Database might already exist or connection issue:", error);
+    }
+
+    // 🔄 Realtime listener
+    onValue(countRef, (snapshot) => {
+      try {
+        const count = snapshot.val();
+        console.log("Received count from Firebase:", count);
+        
+        if (count === null || count === undefined) {
+          console.log("No count data, setting to 0");
+          countElement.textContent = "0";
+          heightElement.textContent = "80%";
+          statusElement.textContent = "Connected ✅";
+          statusElement.style.color = "#4caf50";
+          return;
+        }
+        
+        const newHeight = Math.max(0, baseHeight - count * dropPerScan);
+        
+        console.log(`Count: ${count}, New Height: ${newHeight}%`);
+        
+        ocean.style.height = newHeight + "%";
+        countElement.textContent = count;
+        heightElement.textContent = newHeight + "%";
+        statusElement.textContent = "Connected ✅";
+        statusElement.style.color = "#4caf50";
+        
+      } catch (error) {
+        console.error("Error updating display:", error);
+        statusElement.textContent = "Error ❌";
+        statusElement.style.color = "#f44336";
+      }
+    }, (error) => {
+      console.error("Firebase connection error:", error);
+      statusElement.textContent = "Connection Failed ❌";
+      statusElement.style.color = "#f44336";
+    });
+
+    console.log("Sea Level Monitor initialized");
+  </script>
+</body>
+</html>

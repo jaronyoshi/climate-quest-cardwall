@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sea Level Action</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: white;
+    }
+    .container {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 40px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    h1 {
+      font-size: 3em;
+      margin: 0 0 20px 0;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    p {
+      font-size: 1.2em;
+      margin: 20px 0;
+      opacity: 0.9;
+    }
+    #status {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-weight: bold;
+    }
+    .loading {
+      background: rgba(255, 193, 7, 0.8);
+      color: #333;
+    }
+    .success {
+      background: rgba(76, 175, 80, 0.8);
+      color: white;
+    }
+    .error {
+      background: rgba(244, 67, 54, 0.8);
+      color: white;
+    }
+    a {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 15px 30px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      text-decoration: none;
+      border-radius: 25px;
+      transition: all 0.3s ease;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+    a:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Sea Level Action</h1>
+    <p>You're helping lower the sea level!</p>
+    <div id="status" class="loading">Processing...</div>
+    <a href="index.html">Back to Monitor</a>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+    // 🔥 Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyANWovU5bG4AR9zuA8vgfiqUQqyAIwfqGs",
+      authDomain: "poc-sea-level.firebaseapp.com",
+      projectId: "poc-sea-level",
+      storageBucket: "poc-sea-level.appspot.com",   
+      messagingSenderId: "189055923417",
+      appId: "1:189055923417:web:f952d3a635fd051ad93ac8",
+      databaseURL: "https://poc-sea-level-default-rtdb.asia-southeast1.firebasedatabase.app" 
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const statusElement = document.getElementById("status");
+
+    async function incrementSeaLevel() {
+      try {
+        console.log("Scan page loaded - incrementing sea level count");
+        statusElement.textContent = "Processing...";
+        statusElement.className = "loading";
+
+        const countRef = ref(db, "seaLevel/count");
+        
+        // Get current value
+        const snapshot = await get(countRef);
+        const currentCount = snapshot.exists() ? snapshot.val() : 0;
+        const newCount = currentCount + 1;
+        
+        console.log(`Incrementing from ${currentCount} to ${newCount}`);
+        
+        // Set the new value
+        await set(countRef, newCount);
+        
+        console.log("Successfully updated count to:", newCount);
+        
+        statusElement.textContent = `Success! Sea level lowered (Count: ${newCount})`;
+        statusElement.className = "success";
+        
+      } catch (error) {
+        console.error("Error updating sea level:", error);
+        statusElement.textContent = "❌ Error: " + error.message;
+        statusElement.className = "error";
+      }
+    }
+
+    // Run immediately when page loads
+    incrementSeaLevel();
+  </script>
+</body>
+</html>
