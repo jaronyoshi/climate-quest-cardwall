@@ -5,11 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+
+
+    .nest
+    {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+
+    .scan-button
+    {
+      display: inline-block;
+      font-family: quicksand, sans-serif;
+      padding: 15px 30px;
+      background: rgba(242, 157, 21, 0.2);
+      color: rgb(0, 0, 0);
+      text-decoration: none;
+      border-radius: 25px;
+      font-size: 1.5em;
+      transition: background 0.3s, transform 0.3s;
+    }
+
+
+  </style>
 </head>
 <body>
   <h1>Scan your action card to fight sea level rise!</h1>
 
-  <div>
+  <div class="nest">
     <a href="scanner.html" class="scan-button">Scan card</a>
   </div>
 </body>
