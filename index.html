@@ -151,11 +151,41 @@
       position: absolute;
       top: 20px;
       left: 20px;
-      color: white;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 15px;
-      border-radius: 10px;
+      color: #333;
+      background: rgba(255, 255, 255, 0.75);
+      padding: 20px;
+      border-radius: 24px;
       z-index: 100;
+      font-weight: bold;
+    }
+
+    #info h3 {
+      margin: 0 0 20px 0;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    #info .stats {
+      display: flex;
+      gap: 40px;
+    }
+
+    #info .stat-column {
+      text-align: center;
+    }
+
+    #info .stat-label {
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: #666;
+    }
+
+    #info .stat-value {
+      font-size: 36px;
+      font-weight: bold;
+      color: #333;
     }
     #nav {
       position: absolute;
@@ -180,10 +210,17 @@
 </head>
 <body>
   <div id="info">
-    <h3>Sea Level Monitor</h3>
-    <p>Current Count: <span id="count">Loading...</span></p>
-    <p>Ocean Height: <span id="height">80%</span></p>
-    <p>Status: <span id="status">Connecting...</span></p>
+    <h3>SEA LEVEL MONITOR</h3>
+    <div class="stats">
+      <div class="stat-column">
+        <div class="stat-label">Current count:</div>
+        <div class="stat-value" id="count">0</div>
+      </div>
+      <div class="stat-column">
+        <div class="stat-label">Sea level:</div>
+        <div class="stat-value" id="height">80%</div>
+      </div>
+    </div>
   </div>
 
   <div id="nav">
@@ -226,7 +263,6 @@
     const ocean = document.getElementById("ocean");
     const countElement = document.getElementById("count");
     const heightElement = document.getElementById("height");
-    const statusElement = document.getElementById("status");
     
     const baseHeight = 80; // starting %
     const dropPerScan = 5; // % drop per scan
@@ -252,8 +288,6 @@
           console.log("No count data, setting to 0");
           countElement.textContent = "0";
           heightElement.textContent = "80%";
-          statusElement.textContent = "Connected ✅";
-          statusElement.style.color = "#4caf50";
           return;
         }
         
@@ -264,18 +298,12 @@
         ocean.style.height = newHeight + "%";
         countElement.textContent = count;
         heightElement.textContent = newHeight + "%";
-        statusElement.textContent = "Connected ✅";
-        statusElement.style.color = "#4caf50";
         
       } catch (error) {
         console.error("Error updating display:", error);
-        statusElement.textContent = "Error ❌";
-        statusElement.style.color = "#f44336";
       }
     }, (error) => {
       console.error("Firebase connection error:", error);
-      statusElement.textContent = "Connection Failed ❌";
-      statusElement.style.color = "#f44336";
     });
 
     console.log("Sea Level Monitor initialized");
