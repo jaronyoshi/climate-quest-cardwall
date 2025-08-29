@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
     <title>QR Code Scanner</title>
     <style>
         * {
@@ -10,6 +11,13 @@
             padding: 0;
             box-sizing: border-box;
         }
+
+        .quicksand {
+  font-family: "Quicksand", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -20,6 +28,28 @@
             overflow: hidden;
             -webkit-user-select: none;
             user-select: none;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+          -webkit-user-select: none;
+          user-select: none;
+
+          /* Background image */
+          background-image: url('assets/background-scannerr.png');
+          background-size: cover;       /* Make it cover the entire screen */
+          background-position: center;  /* Center the image */
+          background-repeat: no-repeat; /* Prevent tiling */
+        }
+
+        .logo {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 10px 0 0 0;
+          margin-top: 0px;
+          margin-bottom: 0px;
         }
 
         .header {
@@ -29,11 +59,13 @@
         }
 
         .cancel-btn {
+          font-family: quicksand;
             background: none;
             border: none;
-            font-size: 18px;
+            font-size: 24px;
             color: #333;
             cursor: pointer;
+            text-decoration: none;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -85,7 +117,7 @@
             left: 20px;
             right: 20px;
             height: 2px;
-            background: linear-gradient(90deg, transparent, #1426e9, transparent);
+            background: linear-gradient(90deg, transparent, #00a2ff, transparent);
             animation: scan 2s linear infinite;
             opacity: 0.8;
         }
@@ -99,7 +131,7 @@
             position: absolute;
             width: 30px;
             height: 30px;
-            border: 3px solid #0048ff;
+            border: 3px solid #000000;
         }
 
         .corner.top-left {
@@ -136,10 +168,19 @@
             left: 50%;
             transform: translateX(-50%);
             text-align: center;
-            font-size: 18px;
-            color: #333;
             width: 100%;
             padding: 0 20px;
+        }
+
+        .instructions p {
+          font-family: "Quicksand", sans-serif;
+            color: #000;
+            text-align: center;
+            font-family: Quicksand;
+            font-size: 28px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
         }
 
         .status {
@@ -184,9 +225,13 @@
 </head>
 <body>
     <div class="header">
-        <button class="cancel-btn" onclick="cancelScanning()">
-            ← Cancel
-        </button>
+        <a class="cancel-btn" onclick="cancelScanning()" href="scan-1.html">
+            Cancel
+        </a>
+    </div>
+
+    <div class="logo">
+      <img src="assets/Climate quest logo.svg" alt="" width="261px">
     </div>
 
     <div class="scanner-container">
@@ -204,7 +249,7 @@
     </div>
 
     <div class="instructions">
-        Scan the QR-code on the back of our card
+        <p>Scan the QR-code on the back of our card</p>
     </div>
 
     <div class="error" id="error"></div>
