@@ -6,13 +6,22 @@
   <style>
     body {
       margin: 0;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #FFFAF4;
       font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      color: white;
+      color: black;
+          overflow: hidden;
+    -webkit-user-select: none;
+    user-select: none;
+
+    /* Background image */
+    background-image: url('assets/scan-success-img.svg');
+    background-size: cover;       /* Make it cover the entire screen */
+    background-position: center;  /* Center the image */
+    background-repeat: no-repeat; /* Prevent tiling */
     }
     .container {
       text-align: center;
@@ -44,18 +53,18 @@
     }
     .success {
       background: rgba(76, 175, 80, 0.8);
-      color: white;
+      color: black;
     }
     .error {
       background: rgba(244, 67, 54, 0.8);
-      color: white;
+      color: black;
     }
     a {
       display: inline-block;
       margin-top: 30px;
       padding: 15px 30px;
       background: rgba(255, 255, 255, 0.2);
-      color: white;
+      color: black;
       text-decoration: none;
       border-radius: 25px;
       transition: all 0.3s ease;
@@ -65,6 +74,7 @@
       background: rgba(255, 255, 255, 0.3);
       transform: translateY(-2px);
     }
+
   </style>
 </head>
 <body>
