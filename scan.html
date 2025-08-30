@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+      <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap" rel="stylesheet">
   <title>Sea Level Action</title>
   <style>
     body {
@@ -9,79 +11,139 @@
       background: #FFFAF4;
       font-family: Arial, sans-serif;
       display: flex;
+      flex-direction: column; /* ✅ stack items vertically */
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       color: black;
-          overflow: hidden;
-    -webkit-user-select: none;
-    user-select: none;
-
-    /* Background image */
-    background-image: url('assets/scan-success-img.svg');
-    background-size: cover;       /* Make it cover the entire screen */
-    background-position: center;  /* Center the image */
-    background-repeat: no-repeat; /* Prevent tiling */
     }
+
+    .poetsen-one-regular {
+      font-family: "Poetsen One", sans-serif;
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    .quicksand {
+      font-family: "Quicksand", sans-serif;
+      font-optical-sizing: auto;
+      font-weight: 400;
+      font-style: normal;
+    }
+
     .container {
       text-align: center;
-      background: rgba(255, 255, 255, 0.1);
+      background: #A0DCFF;
       padding: 40px;
+      border: 3px solid #000;
+      box-shadow: 3px 4px 0 2px #000;
       border-radius: 20px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      width: 600px;
+      height: 275px;
+      flex-shrink: 0;
     }
+
     h1 {
-      font-size: 3em;
-      margin: 0 0 20px 0;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      color: #FFF;
+      text-shadow: 3px 4px 0 #000;
+      -webkit-text-stroke-width: 2px;
+      -webkit-text-stroke-color: #000;
+      font-family: Poetsen One;
+      font-size: 64px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
     }
+
     p {
-      font-size: 1.2em;
-      margin: 20px 0;
-      opacity: 0.9;
+      color: #000;
+      text-align: center;
+      font-family: Quicksand;
+      font-size: 24px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
     }
+
     #status {
       margin-top: 20px;
       padding: 10px 20px;
       border-radius: 25px;
       font-weight: bold;
     }
+
     .loading {
       background: rgba(255, 193, 7, 0.8);
       color: #333;
     }
+
     .success {
       background: rgba(76, 175, 80, 0.8);
       color: black;
     }
+
     .error {
       background: rgba(244, 67, 54, 0.8);
       color: black;
     }
-    a {
-      display: inline-block;
-      margin-top: 30px;
-      padding: 15px 30px;
-      background: rgba(255, 255, 255, 0.2);
-      color: black;
-      text-decoration: none;
-      border-radius: 25px;
-      transition: all 0.3s ease;
-      border: 2px solid rgba(255, 255, 255, 0.3);
+
+    .watch-container {
+      display: block;
+      margin-top: 80px;
+      width: 444px;
+      text-align: center;
+      font-family: Quicksand;
+      color: #333;
     }
-    a:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: translateY(-2px);
+
+
+
+
+    .done-button {
+      margin-top: 80px;
+      text-align: center;
     }
+
+
+
+    .done-button a {
+      color: #000;
+text-align: center;
+font-family: Quicksand;
+font-size: 20px;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+text-decoration: none;
+padding: 6px 40px;
+      border-radius: 12px;
+border: 2px solid #000;
+background: #FE991B;
+    }
+
+
 
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Sea Level Action</h1>
-    <p>You're helping lower the sea level!</p>
-    <div id="status" class="loading">Processing...</div>
+    <h1>SCAN SUCCESS</h1>
+    <p>Thank you for your contribution.
+    Even a little can make a big difference.</p>
+  </div>
+
+  <div class="watch-container">
+    <img src="assets/up-arrow-blue.svg" alt="" height="100" width="100">
+    <p> <span style="color: #000;
+text-align: center;
+font-family: Quicksand;
+font-size: 36px;
+font-style: normal;
+font-weight: 500;
+line-height: normal;">Watch the sea level drop on the big screen!</span></p>
+  </div>
+
+  <div class="done-button">
     <a href="scan-1.html">Done</a>
   </div>
 
