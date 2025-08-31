@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap" rel="stylesheet">
   <title>Sea Level Display</title>
   <style>
     body {
@@ -25,6 +27,25 @@
       transition: height 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
       overflow: hidden;
     }
+
+
+    .poetsen-one-regular {
+  font-family: "Poetsen One", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+.quicksand {
+  font-family: "Quicksand", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+
+
 
     /* Natural Waves */
     .wave {
@@ -161,7 +182,8 @@
 
     #info h3 {
       margin: 0 0 20px 0;
-      font-size: 18px;
+      font-family: poetsen one;
+      font-size: 20px;
       font-weight: bold;
       text-align: center;
       letter-spacing: 1px;
@@ -177,6 +199,7 @@
     }
 
     #info .stat-label {
+      font-family: quicksand;
       font-size: 14px;
       margin-bottom: 8px;
       color: #666;
@@ -289,7 +312,19 @@
           return;
         }
         
-        const newHeight = Math.max(0, baseHeight - count * dropPerScan);
+        let newHeight = Math.max(0, baseHeight - count * dropPerScan);
+        
+        // Reset to 80% when sea level reaches 0%
+        if (newHeight <= 0) {
+          console.log("Sea level reached 0%, resetting to 80%");
+          // Reset the count in Firebase to 0
+          set(countRef, 0).then(() => {
+            console.log("Count reset to 0 in Firebase");
+          }).catch(error => {
+            console.error("Error resetting count:", error);
+          });
+          newHeight = 80; // Reset display immediately
+        }
         
         console.log(`Count: ${count}, New Height: ${newHeight}%`);
         
