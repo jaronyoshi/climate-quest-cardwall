@@ -16,6 +16,7 @@
       align-items: center;
       min-height: 100vh;
       color: black;
+      overflow-x: hidden;
     }
 
     .poetsen-one-regular {
@@ -41,6 +42,23 @@
       width: 600px;
       height: 275px;
       flex-shrink: 0;
+      position: relative;
+    }
+
+    .cloud-top-right {
+      position: absolute;
+      top: -150px;
+      right: -150px;
+      width: 300px;
+      height: 300px;
+    }
+
+    .cloud-bottom-left {
+      position: absolute;
+      bottom: -150px;
+      left: -150px;
+      width: 300px;
+      height: 300px;
     }
 
     h1 {
@@ -116,10 +134,35 @@ border: 2px solid #000;
 background: #FE991B;
     }
 
+    /* Confetti Styles */
+    .confetti {
+      position: absolute;
+      pointer-events: none;
+      z-index: 1000;
+      width: 20px;
+      height: 20px;
+    }
+
+    @keyframes confetti-fall {
+      0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+      }
+      80% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
   </style>
 </head>
 <body>
   <div class="container">
+    <img src="assets/celebration-cloud-1.svg" alt="" class="cloud-top-right">
+    <img src="assets/celebration-cloud-2.svg" alt="" class="cloud-bottom-left">
     <h1>SCAN SUCCESS</h1>
     <p>Thank you for your contribution.
     Even a little can make a big difference.</p>
@@ -205,10 +248,62 @@ line-height: normal;">Watch the sea level drop on the big screen!</span></p>
       }
     }
 
+    // Confetti Animation Function
+    function createConfetti() {
+      const confettiTypes = [
+        'assets/confetti-ellipse.svg',
+        'assets/confetti-star.svg',
+        'assets/confetti-zigzag.svg'
+      ];
+      
+      const colors = ['#FE991B', '#A0DCFF', '#FFF', '#FFD700', '#FF6B6B', '#4ECDC4'];
+      
+      // Create 50 confetti pieces
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('img');
+        confetti.className = 'confetti';
+        confetti.src = confettiTypes[Math.floor(Math.random() * confettiTypes.length)];
+        
+        // Random positioning
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.top = '-50px';
+        
+        // Random size
+        const size = Math.random() * 15 + 15; // 15-30px
+        confetti.style.width = size + 'px';
+        confetti.style.height = size + 'px';
+        
+        // Random animation duration and delay
+        const duration = Math.random() * 2 + 3; // 3-5 seconds
+        const delay = Math.random() * 0.5; // 0-0.5 second delay
+        
+        confetti.style.animation = `confetti-fall ${duration}s linear ${delay}s forwards`;
+        
+        // Add random color filter for variety
+        if (Math.random() > 0.5) {
+          confetti.style.filter = `hue-rotate(${Math.random() * 360}deg)`;
+        }
+        
+        document.body.appendChild(confetti);
+        
+        // Remove confetti after animation
+        setTimeout(() => {
+          if (confetti.parentNode) {
+            confetti.parentNode.removeChild(confetti);
+          }
+        }, (duration + delay) * 1000 + 500);
+      }
+    }
+
     // Add a small delay to ensure Firebase is fully ready, then run
     setTimeout(() => {
       incrementSeaLevel();
     }, 1000);
+
+    // Trigger confetti 500ms after page load
+    setTimeout(() => {
+      createConfetti();
+    }, 500);
 
   </script>
 </body>
