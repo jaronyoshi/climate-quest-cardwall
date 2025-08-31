@@ -1,12 +1,23 @@
-
-
 /* scan-1.html */
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  background-color:#FFFAF4;
+}
+
+/* Background styling for html and body */
+html, body {
+  background-color: #A0DCFF;
+  min-height: 100vh;
+}
+
+body {
+  background-image: url('../assets/scan-1-background.png');
+  background-size: 110% 110%;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
 }
 
 .logo {
@@ -100,9 +111,3 @@ margin-top: 12px;
   box-shadow: 4px 4px 0 0 #000;
   white-space: nowrap; /* keeps "Scan Card" on one line */
 }
-
-
-
-
-
-
