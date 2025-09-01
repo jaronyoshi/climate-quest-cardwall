@@ -1,0 +1,150 @@
+body {
+      margin: 0;
+      background: #FFFAF4;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column; /* ✅ stack items vertically */
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: black;
+      overflow-x: hidden;
+    }
+
+    .poetsen-one-regular {
+      font-family: "Poetsen One", sans-serif;
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    .quicksand {
+      font-family: "Quicksand", sans-serif;
+      font-optical-sizing: auto;
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    .container {
+      text-align: center;
+      background: #A0DCFF;
+      padding: 40px;
+      border: 3px solid #000;
+      box-shadow: 3px 4px 0 2px #000;
+      border-radius: 20px;
+      width: 600px;
+      height: 275px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .cloud-top-right {
+      position: absolute;
+      top: -150px;
+      right: -150px;
+      width: 300px;
+      height: 300px;
+    }
+
+    .cloud-bottom-left {
+      position: absolute;
+      bottom: -150px;
+      left: -150px;
+      width: 300px;
+      height: 300px;
+    }
+
+    h1 {
+      color: #FFF;
+      text-shadow: 3px 4px 0 #000;
+      -webkit-text-stroke-width: 2px;
+      -webkit-text-stroke-color: #000;
+      font-family: Poetsen One;
+      font-size: 64px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+    }
+
+    p {
+      color: #000;
+      text-align: center;
+      font-family: Quicksand;
+      font-size: 24px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+    }
+
+    #status {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-weight: bold;
+    }
+
+    .loading {
+      background: rgba(255, 193, 7, 0.8);
+      color: #333;
+    }
+
+    .success {
+      background: rgba(76, 175, 80, 0.8);
+      color: black;
+    }
+
+    .error {
+      background: rgba(244, 67, 54, 0.8);
+      color: black;
+    }
+
+    .watch-container {
+      display: block;
+      margin-top: 80px;
+      width: 444px;
+      text-align: center;
+      font-family: Quicksand;
+      color: #333;
+    }
+
+    .done-button {
+      margin-top: 80px;
+      text-align: center;
+    }
+
+    .done-button a {
+      color: #000;
+text-align: center;
+font-family: Quicksand;
+font-size: 20px;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+text-decoration: none;
+padding: 6px 40px;
+      border-radius: 12px;
+border: 2px solid #000;
+background: #FE991B;
+    }
+
+    /* Confetti Styles */
+    .confetti {
+      position: absolute;
+      pointer-events: none;
+      z-index: 1000;
+      width: 20px;
+      height: 20px;
+    }
+
+    @keyframes confetti-fall {
+      0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+      }
+      80% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
