@@ -328,9 +328,12 @@
         
         console.log(`Count: ${count}, New Height: ${newHeight}%`);
         
-        ocean.style.height = newHeight + "%";
-        countElement.textContent = count;
-        heightElement.textContent = newHeight + "%";
+        // Add 4-second delay before updating the visual elements
+        setTimeout(() => {
+          ocean.style.height = newHeight + "%";
+          countElement.textContent = count;
+          heightElement.textContent = newHeight + "%";
+        }, 4000);
         
       } catch (error) {
         console.error("Error updating display:", error);
