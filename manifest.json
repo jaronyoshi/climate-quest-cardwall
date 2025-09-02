@@ -1,6 +1,6 @@
 {
   "name": "Climate Quest",
-  "short_name": "CQ",
+  "short_name": "Climate Quest",
   "start_url": "/scan-1.html",
   "scope": "/",
   "display": "standalone",
